@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>vmxr — metrics in 3D</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <button id="panel-toggle" title="Show / hide panel">☰</button>
+
+  <aside id="panel">
+    <header>
+      <div class="brand">
+        <span class="logo">vmxr</span>
+        <span class="tag">metrics in 3D · WebXR</span>
+      </div>
+      <div class="xr-buttons">
+        <button id="enter-vr" disabled>Enter VR</button>
+        <button id="enter-ar" disabled>Enter AR</button>
+      </div>
+    </header>
+    <p id="xr-reason" class="hint xr-reason" hidden></p>
+    <div class="mode-row">
+      <button id="dash-toggle" title="Show every catalog plot at once, on a ring around you">▦ Dashboard</button>
+      <button id="dash-overview" hidden title="Zoom back out to the whole ring (Esc)">⤢ Overview</button>
+    </div>
+
+    <section>
+      <h2>Demo catalog <small>play.victoriametrics.com</small></h2>
+      <div id="catalog"></div>
+    </section>
+
+    <section>
+      <h2 id="query-title">Query</h2>
+      <div class="q-row">
+        <span class="axis-tag" data-viz="scatter trails">X</span>
+        <textarea id="query" rows="3" spellcheck="false" placeholder="sum(rate(vmselect_request_duration_seconds_bucket[5m])) by (vmrange)"></textarea>
+      </div>
+      <div class="q-row" data-viz="scatter trails">
+        <span class="axis-tag">Y</span>
+        <textarea id="queryY" rows="3" spellcheck="false" placeholder="Y (height) — same `by (...)` labels as X"></textarea>
+      </div>
+      <div class="q-row" data-viz="scatter trails">
+        <span class="axis-tag">Z</span>
+        <textarea id="queryZ" rows="3" spellcheck="false" placeholder="Z (depth) — same `by (...)` labels as X"></textarea>
+      </div>
+      <p class="hint" id="viz-hint"></p>
+      <div class="grid">
+        <label>Shape
+          <select id="viz">
+            <optgroup label="Over time — ordered axes">
+              <option value="surface">Surface — time × bucket / quantile</option>
+              <option value="ribbons">Ribbons — time × ordered lanes</option>
+              <option value="calendar">Calendar — day × hour of day</option>
+            </optgroup>
+            <optgroup label="Relationships — 3 metrics">
+              <option value="scatter">Scatter — one point per entity</option>
+              <option value="trails">Trails — entity paths over time</option>
+            </optgroup>
+            <optgroup label="Snapshots">
+              <option value="radial">Radial — ranking ring</option>
+              <option value="bars">Bars — label × label grid</option>
+            </optgroup>
+          </select>
+        </label>
+        <label data-viz="surface ribbons trails">Time range
+          <select id="range">
+            <option value="900">15 minutes</option>
+            <option value="3600">1 hour</option>
+            <option value="10800">3 hours</option>
+            <option value="21600">6 hours</option>
+            <option value="43200">12 hours</option>
+            <option value="86400">24 hours</option>
+          </select>
+        </label>
+        <label data-viz="calendar">Days
+          <select id="days">
+            <option value="7">7 days</option>
+            <option value="14">14 days</option>
+            <option value="21">21 days</option>
+            <option value="28">28 days</option>
+          </select>
+        </label>
+        <label data-viz="bars">X axis label <select id="x"></select></label>
+        <label data-viz="bars">Z axis label <select id="z"></select></label>
+        <label data-viz="surface ribbons">Order rows by <select id="sortBy"></select></label>
+        <label data-viz="scatter trails">Colour by <select id="colorBy"></select></label>
+        <label data-viz="surface ribbons calendar radial bars">Unit
+          <select id="unit">
+            <option value="auto">auto</option>
+            <option value="short">number</option>
+            <option value="bytes">bytes</option>
+            <option value="bps">bytes/s</option>
+            <option value="percent">0–1 → %</option>
+            <option value="seconds">seconds</option>
+          </select>
+        </label>
+        <label>Auto-refresh
+          <select id="refresh">
+            <option value="0">off</option>
+            <option value="1">1 s</option>
+            <option value="5" selected>5 s</option>
+            <option value="10">10 s</option>
+            <option value="15">15 s</option>
+            <option value="30">30 s</option>
+            <option value="60">1 min</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="log" /> Log scale</label>
+      </div>
+      <div class="run-row">
+        <button id="run" class="primary">Run <kbd>Ctrl ↵</kbd></button>
+        <button id="share" title="Copy a link to this view">Copy link</button>
+      </div>
+      <div id="status" class="status"></div>
+    </section>
+
+    <details>
+      <summary>Data source</summary>
+      <label>Prometheus-compatible base URL
+        <input id="endpoint" type="url" spellcheck="false" />
+      </label>
+      <p class="hint">Any endpoint exposing <code>/api/v1/query</code> and <code>/api/v1/query_range</code> with CORS enabled.</p>
+    </details>
+
+    <footer class="hint">
+      <p><b>Desktop:</b> drag to orbit · right-drag to pan · scroll to zoom · hover for values.</p>
+      <p><b>Headset:</b> point + trigger to use the menu · hold grip and move your hand to rotate a plot in place · thumbstick scales the plot, or moves / turns the dashboard wall.</p>
+    </footer>
+  </aside>
+
+  <div id="tooltip" hidden></div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

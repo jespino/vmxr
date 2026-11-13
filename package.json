@@ -1,0 +1,23 @@
+{
+  "name": "vmxr",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Explore PromQL / MetricsQL query results in 3D and WebXR",
+  "scripts": {
+    "dev": "vite",
+    "dev:lan": "vite --host --mode https",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check-catalog": "node scripts/check-catalog.mjs"
+  },
+  "dependencies": {
+    "@iwer/devui": "2.7.0",
+    "iwer": "2.7.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "vite": "^8.3.8"
+  }
+}
